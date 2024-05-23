@@ -1,4 +1,5 @@
-const IncidentHistory = require("./IncidentHistory"); 
+const IncidentHistory = require("./IncidentHistory");
+const mongoose = require("mongoose");
 
 exports.createIncidentHistory = async (req, res) => {
   try {
@@ -12,7 +13,9 @@ exports.createIncidentHistory = async (req, res) => {
 
 exports.getAllIncidentHistories = async (req, res) => {
   try {
-    const incidentHistories = await IncidentHistory.find().populate("id_incident");
+    const incidentHistories = await IncidentHistory.find().populate(
+      "id_incident"
+    );
     res.status(200).json(incidentHistories);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -21,7 +24,9 @@ exports.getAllIncidentHistories = async (req, res) => {
 
 exports.getIncidentHistoryById = async (req, res) => {
   try {
-    const incidentHistory = await IncidentHistory.findById(req.params.id).populate("id_incident");
+    const incidentHistory = await IncidentHistory.findById(
+      req.params.id
+    ).populate("id_incident");
     if (!incidentHistory) {
       return res.status(404).json({ message: "Incident history not found" });
     }
@@ -33,7 +38,11 @@ exports.getIncidentHistoryById = async (req, res) => {
 
 exports.updateIncidentHistory = async (req, res) => {
   try {
-    const incidentHistory = await IncidentHistory.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const incidentHistory = await IncidentHistory.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
     if (!incidentHistory) {
       return res.status(404).json({ message: "Incident history not found" });
     }
@@ -45,7 +54,9 @@ exports.updateIncidentHistory = async (req, res) => {
 
 exports.deleteIncidentHistory = async (req, res) => {
   try {
-    const incidentHistory = await IncidentHistory.findByIdAndDelete(req.params.id);
+    const incidentHistory = await IncidentHistory.findByIdAndDelete(
+     req.params.id
+    );
     if (!incidentHistory) {
       return res.status(404).json({ message: "Incident history not found" });
     }

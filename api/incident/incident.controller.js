@@ -1,4 +1,5 @@
-const Incident = require("../incident/Incident"); 
+const Incident = require("../incident/Incident");
+const mongoose = require("mongoose");
 
 exports.createIncident = async (req, res) => {
   try {
@@ -21,7 +22,10 @@ exports.getAllIncidents = async (req, res) => {
 
 exports.getIncidentById = async (req, res) => {
   try {
-    const incident = await Incident.findById(req.params.id);
+    console.log(req.params.id);
+    const incident = await Incident.findById(
+      req.params.id
+    );
     if (!incident) {
       return res.status(404).json({ message: "Incident not found" });
     }
@@ -33,7 +37,14 @@ exports.getIncidentById = async (req, res) => {
 
 exports.updateIncident = async (req, res) => {
   try {
-    const incident = await Incident.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const incident = await Incident.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     if (!incident) {
       return res.status(404).json({ message: "Incident not found" });
     }
@@ -45,7 +56,9 @@ exports.updateIncident = async (req, res) => {
 
 exports.deleteIncident = async (req, res) => {
   try {
-    const incident = await Incident.findByIdAndDelete(req.params.id);
+    const incident = await Incident.findByIdAndDelete(
+      req.params.id
+    );
     if (!incident) {
       return res.status(404).json({ message: "Incident not found" });
     }
