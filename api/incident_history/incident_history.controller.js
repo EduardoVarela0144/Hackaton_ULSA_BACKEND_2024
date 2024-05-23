@@ -1,5 +1,5 @@
 const IncidentHistory = require("./IncidentHistory");
-const mongoose = require("mongoose");
+const { uploadData } = require("@aws-amplify/storage");
 
 exports.createIncidentHistory = async (req, res) => {
   try {
@@ -20,6 +20,20 @@ exports.createIncidentHistory = async (req, res) => {
       incident_description: incident_description,
       incident_location: JSON.parse(incident_location),
     });
+
+    const incidentFiles = req.file;
+
+    console.log(incidentFiles);
+
+    try {
+      const result = await uploadData({
+        path:  `public/${incidentFiles.originalname}`,
+        data: incidentFiles.buffer,
+      }).result;
+      console.log("Succeeded: ", result);
+    } catch (error) {
+      console.log("Error : ", error);
+    }
 
     await incidentHistory.save();
 

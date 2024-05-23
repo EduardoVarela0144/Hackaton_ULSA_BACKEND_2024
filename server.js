@@ -5,9 +5,12 @@ const routesConfig = require("./routes/");
 const express = require("express");
 const cors = require("cors");
 const logger = require("morgan");
-const multer = require("multer");
+const multer = require('multer');
+
+
 
 const createError = require("http-errors");
+
 var path = require("path");
 
 const app = express();
@@ -15,7 +18,7 @@ const upload = multer();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(upload.array("files"));
+app.use(upload.single("file"));
 
 app.use(cors());
 app.use(logger("dev"));
