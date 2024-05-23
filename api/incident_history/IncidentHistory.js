@@ -7,6 +7,12 @@ const incidentHistorySchema = new mongoose.Schema(
       ref: "Incident",
       required: true,
     },
+    incident_files: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "IncidentFile",
+      },
+    ],
     incident_name: {
       type: String,
       required: true,
@@ -36,6 +42,9 @@ const incidentHistorySchema = new mongoose.Schema(
   }
 );
 
-const IncidentHistory = mongoose.model("IncidentHistory", incidentHistorySchema);
+const IncidentHistory = mongoose.model(
+  "IncidentHistory",
+  incidentHistorySchema
+);
 
 module.exports = IncidentHistory;
