@@ -5,7 +5,7 @@ exports.createIncidentHistory = async (req, res) => {
   try {
     const incidentHistory = new IncidentHistory(req.body);
     await incidentHistory.save();
-    res.status(201).json(incidentHistory);
+    res.status(201).json({ message: "Incident history created successfully" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -26,7 +26,9 @@ exports.getIncidentHistoryById = async (req, res) => {
   try {
     const incidentHistory = await IncidentHistory.findById(
       req.params.id
-    ).populate("id_incident");
+    )
+    .select("-__v -updatedAt -incident_location._id"); 
+    ;
     if (!incidentHistory) {
       return res.status(404).json({ message: "Incident history not found" });
     }
@@ -46,7 +48,7 @@ exports.updateIncidentHistory = async (req, res) => {
     if (!incidentHistory) {
       return res.status(404).json({ message: "Incident history not found" });
     }
-    res.status(200).json(incidentHistory);
+    res.status(200).json({ message: "Incident history updated successfully" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

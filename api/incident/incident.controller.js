@@ -1,11 +1,10 @@
 const Incident = require("../incident/Incident");
-const mongoose = require("mongoose");
 
 exports.createIncident = async (req, res) => {
   try {
     const incident = new Incident(req.body);
     await incident.save();
-    res.status(201).json(incident);
+    res.status(201).json({ message: "Incident created successfully" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -13,7 +12,7 @@ exports.createIncident = async (req, res) => {
 
 exports.getAllIncidents = async (req, res) => {
   try {
-    const incidents = await Incident.find();
+    const incidents = await Incident.find().select("-__v -updatedAt -incident_location._id"); ;
     res.status(200).json(incidents);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -22,10 +21,9 @@ exports.getAllIncidents = async (req, res) => {
 
 exports.getIncidentById = async (req, res) => {
   try {
-    console.log(req.params.id);
     const incident = await Incident.findById(
       req.params.id
-    );
+    ).select("-__v -updatedAt -incident_location._id"); 
     if (!incident) {
       return res.status(404).json({ message: "Incident not found" });
     }
@@ -48,7 +46,7 @@ exports.updateIncident = async (req, res) => {
     if (!incident) {
       return res.status(404).json({ message: "Incident not found" });
     }
-    res.status(200).json(incident);
+    res.status(200).json({ message: "Incident updated successfully" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
