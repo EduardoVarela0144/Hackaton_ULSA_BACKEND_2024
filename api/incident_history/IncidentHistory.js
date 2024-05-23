@@ -24,8 +24,8 @@ const incidentHistorySchema = new mongoose.Schema({
   },
   incident_location: {
     type: {
-      alt: Float32Array,
-      long: Float32Array,
+      alt: Number,
+      long: Number,
     },
     required: true,
   },

@@ -1,4 +1,5 @@
 const packageJson = require("../package.json");
+const incidentRouter = require("../api/incident/incident.routes");
 
 const API_V1 = "/hackaton";
 
@@ -7,6 +8,5 @@ module.exports = (app) => {
     res.json({ version: packageJson.version });
   });
 
-  
-
+  app.use(`${API_V1}/incidents`, incidentRouter);
 };
