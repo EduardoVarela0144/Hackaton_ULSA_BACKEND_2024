@@ -1,4 +1,5 @@
 const Incident = require("../incident/Incident");
+const IncidentHistory = require("../incident_history/IncidentHistory");
 
 exports.createIncident = async (req, res) => {
   try {
@@ -12,7 +13,9 @@ exports.createIncident = async (req, res) => {
 
 exports.getAllIncidents = async (req, res) => {
   try {
-    const incidents = await Incident.find().select("-__v -updatedAt -incident_location._id"); ;
+    const incidents = await Incident.find().select(
+      "-__v -updatedAt -incident_location._id"
+    );
     res.status(200).json(incidents);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -21,9 +24,9 @@ exports.getAllIncidents = async (req, res) => {
 
 exports.getIncidentById = async (req, res) => {
   try {
-    const incident = await Incident.findById(
-      req.params.id
-    ).select("-__v -updatedAt -incident_location._id"); 
+    const incident = await Incident.findById(req.params.id).select(
+      "-__v -updatedAt -incident_location._id"
+    );
     if (!incident) {
       return res.status(404).json({ message: "Incident not found" });
     }
@@ -33,16 +36,31 @@ exports.getIncidentById = async (req, res) => {
   }
 };
 
+exports.getIncidentHistory = async (req, res) => {
+  try {
+    const incidentHistory = await IncidentHistory.find({
+      id_incident: req.params.id,
+    })
+      .select("-__v -updatedAt -incident_location._id")
+      .populate({
+        path: "incident_files",
+      });
+
+    if (!incidentHistory) {
+      return res.status(404).json({ message: "Incident History not found" });
+    }
+    res.status(200).json(incidentHistory);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 exports.updateIncident = async (req, res) => {
   try {
-    const incident = await Incident.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const incident = await Incident.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
     if (!incident) {
       return res.status(404).json({ message: "Incident not found" });
     }
@@ -54,9 +72,7 @@ exports.updateIncident = async (req, res) => {
 
 exports.deleteIncident = async (req, res) => {
   try {
-    const incident = await Incident.findByIdAndDelete(
-      req.params.id
-    );
+    const incident = await Incident.findByIdAndDelete(req.params.id);
     if (!incident) {
       return res.status(404).json({ message: "Incident not found" });
     }
