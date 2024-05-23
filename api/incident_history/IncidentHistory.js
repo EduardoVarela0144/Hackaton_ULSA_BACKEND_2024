@@ -1,0 +1,38 @@
+const { Schema, model } = require("mongoose");
+
+const incidentHistorySchema = new mongoose.Schema({
+  id_incident: {
+    type: Schema.Types.ObjectId,
+    ref: "Incident",
+    required: true,
+  },
+  incident_name: {
+    type: String,
+    required: true,
+  },
+  incident_status: {
+    type: Number,
+    required: true,
+  },
+  id_user: {
+    type: String,
+    required: true,
+  },
+  incident_description: {
+    type: String,
+    required: true,
+  },
+  incident_location: {
+    type: {
+      alt: Float32Array,
+      long: Float32Array,
+    },
+    required: true,
+  },
+
+  timestamps: true,
+});
+
+const IncidentHistory = model("IncidentHistory", incidentHistorySchema);
+
+module.exports = IncidentHistory;
