@@ -3,8 +3,26 @@ const mongoose = require("mongoose");
 
 exports.createIncidentHistory = async (req, res) => {
   try {
-    const incidentHistory = new IncidentHistory(req.body);
+    const {
+      id_incident,
+      incident_name,
+      incident_status,
+      id_user,
+      incident_description,
+      incident_location,
+    } = req.body;
+
+    const incidentHistory = new IncidentHistory({
+      id_incident: id_incident,
+      incident_name: incident_name,
+      incident_status: incident_status,
+      id_user: id_user,
+      incident_description: incident_description,
+      incident_location: JSON.parse(incident_location),
+    });
+
     await incidentHistory.save();
+
     res.status(201).json({ message: "Incident history created successfully" });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -26,9 +44,7 @@ exports.getIncidentHistoryById = async (req, res) => {
   try {
     const incidentHistory = await IncidentHistory.findById(
       req.params.id
-    )
-    .select("-__v -updatedAt -incident_location._id"); 
-    ;
+    ).select("-__v -updatedAt -incident_location._id");
     if (!incidentHistory) {
       return res.status(404).json({ message: "Incident history not found" });
     }
@@ -57,7 +73,7 @@ exports.updateIncidentHistory = async (req, res) => {
 exports.deleteIncidentHistory = async (req, res) => {
   try {
     const incidentHistory = await IncidentHistory.findByIdAndDelete(
-     req.params.id
+      req.params.id
     );
     if (!incidentHistory) {
       return res.status(404).json({ message: "Incident history not found" });
