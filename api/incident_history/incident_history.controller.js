@@ -1,5 +1,11 @@
 const IncidentHistory = require("./IncidentHistory");
-const { uploadData } = require("@aws-amplify/storage");
+const IncidentFile = require("../incident_file/IncidentFile");
+const AWS = require("aws-sdk");
+
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
 
 exports.createIncidentHistory = async (req, res) => {
   try {
@@ -21,21 +27,54 @@ exports.createIncidentHistory = async (req, res) => {
       incident_location: JSON.parse(incident_location),
     });
 
-    const incidentFiles = req.file;
+    const incidentFiles = req.files;
+    let incidentFilesArray = [];
+    let incidentFilesUrlArray = [];
 
-    console.log(incidentFiles);
+    if (incidentFiles) {
+      incidentFiles.forEach(async (file) => {
+        const params = {
+          Bucket: process.env.AWS_S3_BUCKET_NAME,
+          Key: `public/${file.originalname}`,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+        };
 
-    try {
-      const result = await uploadData({
-        path:  `public/${incidentFiles.originalname}`,
-        data: incidentFiles.buffer,
-      }).result;
-      console.log("Succeeded: ", result);
-    } catch (error) {
-      console.log("Error : ", error);
+        try {
+          await s3.upload(params).promise();
+          incidentFilesArray.push({
+            file_name: file.originalname,
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      });
     }
 
-    await incidentHistory.save();
+    await Promise.all(
+      incidentFilesArray.map(async (file) => {
+        const params = {
+          Bucket: process.env.AWS_S3_BUCKET_NAME,
+          Key: `public/${file.file_name}`,
+        };
+
+        try {
+          const url = await s3.getSignedUrlPromise("getObject", params);
+          incidentFilesUrlArray.push(
+            new IncidentFile({
+              file_name: file.file_name,
+              file_path: url,
+            })
+          );
+        } catch (error) {
+          console.error(error);
+        }
+      })
+    );
+
+    console.log(incidentFilesArray);
+
+    // await incidentHistory.save();
 
     res.status(201).json({ message: "Incident history created successfully" });
   } catch (error) {

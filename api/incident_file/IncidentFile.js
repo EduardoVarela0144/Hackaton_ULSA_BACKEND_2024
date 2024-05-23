@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const incidentFileSchema = new mongoose.Schema(
   {
-    file_path: {
+    file_name: {
       type: String,
       required: true,
     },

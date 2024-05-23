@@ -1,8 +1,6 @@
 {
   "name": "hackaton_ulsa_backend_2024",
   "version": "1.0.0",
-
-  
   "description": "Backend del hackaton 2024",
   "main": "app.js",
   "scripts": {
@@ -14,6 +12,7 @@
   "dependencies": {
     "@aws-amplify/storage": "^6.4.3",
     "@aws-sdk/client-s3": "^3.583.0",
+    "aws-sdk": "^2.1627.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
