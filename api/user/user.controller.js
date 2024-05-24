@@ -9,21 +9,24 @@ exports.createUser = async (req, res) => {
 
     const {
       name,
+      lastName,
       email,
       password,
       phone,
     } = req.body;
 
+
     const incidentImages = req.files.images;
 
     let incidentFilesArray = [];
 
-    const nameProfilePicture = `${name}_${email}`
+    const nameProfilePicture = `${name}_${lastName}`
     if (incidentImages) {
       incidentFilesArray = await saveS3ImageUser(incidentImages, nameProfilePicture);
     }
 
     const user = new User({
+      lastName,
       name,
       email,
       password,
