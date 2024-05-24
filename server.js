@@ -18,8 +18,12 @@ const upload = multer();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(upload.array("files"));
-// app.use(upload.array("images"))
+
+const uploadMiddleware = upload.fields([
+  { name: 'files', maxCount: 10 },
+  { name: 'images', maxCount: 10 }
+]);
+app.use(uploadMiddleware);
 
 app.use(cors());
 app.use(logger("dev"));

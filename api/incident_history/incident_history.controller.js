@@ -12,12 +12,19 @@ exports.createIncidentHistory = async (req, res) => {
       incident_location,
     } = req.body;
 
-    const incidentFiles = req.files;
+    const incidentFiles = req.files.files;
+    const incidentImages = req.files.images;  
+
 
     let incidentFilesArray = [];
+    let incidentImagesArray = [];
 
     if (incidentFiles) {
       incidentFilesArray = await saveS3File(incidentFiles);
+    }
+
+    if (incidentImages) {
+      incidentImagesArray = await saveS3File(incidentImages);
     }
 
     const incidentHistory = new IncidentHistory({

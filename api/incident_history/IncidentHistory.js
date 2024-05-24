@@ -13,6 +13,12 @@ const incidentHistorySchema = new mongoose.Schema(
         ref: "IncidentFile",
       },
     ],
+    incident_images: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "IncidentFile",
+      },
+    ],
     incident_name: {
       type: String,
       required: true,
