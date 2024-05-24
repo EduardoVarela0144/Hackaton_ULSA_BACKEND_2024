@@ -33,7 +33,6 @@ const incidentHistorySchema = new mongoose.Schema(
         email: String,
         phone: String,
       },
-      required: true,
     },
     incident_description: {
       type: String,

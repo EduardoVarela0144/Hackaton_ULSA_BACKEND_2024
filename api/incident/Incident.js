@@ -14,6 +14,18 @@ const incidentSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    incident_files: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "IncidentFile",
+      },
+    ],
+    incident_images: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "IncidentFile",
+      },
+    ],
     incident_location: {
       type: {
         alt: Number,
@@ -28,7 +40,6 @@ const incidentSchema = new mongoose.Schema(
         email: String,
         phone: String,
       },
-      required: true,
     },
     client_user: {
       type: {
@@ -36,7 +47,6 @@ const incidentSchema = new mongoose.Schema(
         email: String,
         phone: String,
       },
-      required: true,
     },
   },
   {
@@ -47,3 +57,5 @@ const incidentSchema = new mongoose.Schema(
 const Incident = mongoose.model("Incident", incidentSchema);
 
 module.exports = Incident;
+
+
