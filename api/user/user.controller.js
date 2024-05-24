@@ -5,6 +5,9 @@ const { showS3File } = require("../../services/showS3File");
 
 
 exports.createUser = async (req, res) => {
+
+  console.log('hola')
+
   try {
 
     const {
@@ -18,6 +21,7 @@ exports.createUser = async (req, res) => {
 
     const incidentImages = req.files.images;
 
+    
     let incidentFilesArray = [];
 
     const nameProfilePicture = `${name}_${lastName}`
