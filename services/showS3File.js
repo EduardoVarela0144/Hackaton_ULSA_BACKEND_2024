@@ -1,6 +1,6 @@
 const AWS = require("aws-sdk");
 
-async function saveS3File(files) {
+async function showS3File(files) {
 
   let incidentFilesArray = [];
 
@@ -9,8 +9,10 @@ async function saveS3File(files) {
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   });
 
+  const filesArray = Array.isArray(files) ? files : [files];
+
   await Promise.all(
-    incidentFilesArray.map(async (file) => {
+    filesArray.map(async (file) => {
       const params = {
         Bucket: process.env.AWS_S3_BUCKET_NAME,
         Key: `public/${file.file_name}`,
@@ -19,7 +21,6 @@ async function saveS3File(files) {
       try {
         const url = await s3.getSignedUrlPromise("getObject", params);
         incidentFilesArray.push({ url: url, file_name: file.file_name });
-        
       } catch (error) {
         console.error(error);
       }
@@ -29,4 +30,4 @@ async function saveS3File(files) {
   return incidentFilesArray;
 }
 
-module.exports = { saveS3File };
+module.exports = { showS3File };

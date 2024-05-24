@@ -1,5 +1,6 @@
 const Incident = require("../incident/Incident");
 const IncidentHistory = require("../incident_history/IncidentHistory");
+const { showS3File } = require("../../services/showS3File");
 
 exports.createIncident = async (req, res) => {
   try {
@@ -44,16 +45,34 @@ exports.getIncidentHistory = async (req, res) => {
       .select("-__v -updatedAt -incident_location._id")
       .populate({
         path: "incident_files",
-      });
+      })
+      .populate({
+        path: "incident_images",
+      })
+      ;
 
-    if (!incidentHistory) {
+    if (!incidentHistory || incidentHistory.length === 0) {
       return res.status(404).json({ message: "Incident History not found" });
     }
-    res.status(200).json(incidentHistory);
+
+    const processedIncidents = await Promise.all(
+      incidentHistory.map(async incident => {
+        const processedFiles = await Promise.all(
+          incident.incident_files.map(async file => await showS3File(file))
+        );
+        const processedImages = await Promise.all(
+          incident.incident_images.map(async image => await showS3File(image))
+        );
+        return { ...incident._doc, incident_files: processedFiles, incident_images: processedImages };
+      })
+    );
+
+    res.status(200).json(processedIncidents);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 exports.updateIncident = async (req, res) => {
   try {
