@@ -48,7 +48,9 @@ exports.createIncident = async (req, res) => {
 
 exports.getAllIncidents = async (req, res) => {
   try {
-    const incidents = await Incident.find().select(
+    const incidents = await Incident.find({
+      "client_user.email": req.params.email,
+    }).select(
       "-__v -updatedAt -incident_location._id"
     );
     res.status(200).json(incidents);
