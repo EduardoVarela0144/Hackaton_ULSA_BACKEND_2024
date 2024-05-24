@@ -1,9 +1,37 @@
 const { User } = require("./User");
 const bcrypt = require("bcryptjs");
+const { saveS3ImageUser } = require("../../services/saveS3ImageUser");
+const { showS3File } = require("../../services/showS3File");
+
 
 exports.createUser = async (req, res) => {
   try {
-    const user = new User(req.body);
+
+    const {
+      name,
+      email,
+      password,
+      phone,
+    } = req.body;
+
+    const incidentImages = req.files.images;
+
+    let incidentFilesArray = [];
+
+    const nameProfilePicture = `${name}_${email}`
+    if (incidentImages) {
+      incidentFilesArray = await saveS3ImageUser(incidentImages, nameProfilePicture);
+    }
+
+    const user = new User({
+      name,
+      email,
+      password,
+      phone,
+      profilePicture: incidentFilesArray[0],
+    });
+
+
     await user.save();
     res.status(201).json(user);
   } catch (error) {
@@ -14,6 +42,8 @@ exports.createUser = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
+
+
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener los usuarios" });
@@ -64,6 +94,8 @@ exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
+
+
 
     if (!user) {
       return res.status(401).json({ error: "Credenciales incorrectas" });

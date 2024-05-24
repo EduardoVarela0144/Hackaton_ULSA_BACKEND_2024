@@ -47,6 +47,21 @@ exports.createIncident = async (req, res) => {
 };
 
 exports.getAllIncidents = async (req, res) => {
+
+  console.log(req.params.municipality)
+  try {
+    const incidents = await Incident.find({
+      "incident_location.municipality": req.params.municipality,
+    }).select(
+      "-__v -updatedAt -incident_location._id"
+    );
+    res.status(200).json(incidents);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getAllIncidentsByEmail = async (req, res) => {
   try {
     const incidents = await Incident.find({
       "client_user.email": req.params.email,

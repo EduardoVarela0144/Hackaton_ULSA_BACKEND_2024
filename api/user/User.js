@@ -1,19 +1,19 @@
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcryptjs");
+const mongoose = require("mongoose");
 
 const UserSchema = new Schema(
   {
-    firstName: { type: String, required: true },//Nombre
-    lastName: { type: String, required: true },//ApellidoPaterno
-    middleName: { type: String, required: true },//ApellidoMaterno
-    email: { type: String, required: true, unique: true },//Correo
-    password: { type: String, required: true },//Contraseña
-    registrationNumber: { type: String, required: false },//Matricula
-    accountNumber: { type: String, required: false },//Numero de cuenta bancaria
-    profilePicture: { type: String, required: false },//Foto de perfil
-    major: { type: String, required: false },//Carrera
-    building: { type: String, required: false },//Edificio
-    rol: { type: String, required: true },//Rol
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    phone: { type: String },
+    status : { type: Boolean, default: true },
+    municipality: { type: String, default: "xoxo"},
+    profilePicture: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "IncidentFile",
+    },
   },
   { timestamps: true }
 );
