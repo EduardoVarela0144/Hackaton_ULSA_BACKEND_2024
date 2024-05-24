@@ -57,6 +57,7 @@ exports.getIncidentHistory = async (req, res) => {
 
     const processedIncidents = await Promise.all(
       incidentHistory.map(async incident => {
+        
         const processedFiles = await Promise.all(
           incident.incident_files.map(async file => await showS3File(file))
         );
