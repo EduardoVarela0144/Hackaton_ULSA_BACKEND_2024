@@ -35,6 +35,7 @@ exports.createIncidentHistory = async (req, res) => {
       incident_description: incident_description,
       incident_location: JSON.parse(incident_location),
       incident_files: incidentFilesArray,
+      incident_images: incidentImagesArray,
     });
 
     await incidentHistory.save();
