@@ -18,6 +18,7 @@ const incidentSchema = new mongoose.Schema(
       type: {
         alt: Number,
         long: Number,
+        municipality: String
       },
       required: true,
     },
