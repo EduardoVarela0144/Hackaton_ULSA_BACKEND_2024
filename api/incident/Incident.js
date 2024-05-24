@@ -18,16 +18,24 @@ const incidentSchema = new mongoose.Schema(
       type: {
         alt: Number,
         long: Number,
-        municipality: String
+        municipality: String,
       },
       required: true,
     },
-    id_technical_user: {
-      type: String,
+    technical_user: {
+      type: {
+        name: String,
+        email: String,
+        phone: String,
+      },
       required: true,
     },
-    id_client_user: {
-      type: String,
+    client_user: {
+      type: {
+        name: String,
+        email: String,
+        phone: String,
+      },
       required: true,
     },
   },

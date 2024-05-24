@@ -27,8 +27,12 @@ const incidentHistorySchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    id_user: {
-      type: String,
+    user: {
+      type:{
+        name: String,
+        email: String,
+        phone: String,
+      },
       required: true,
     },
     incident_description: {
