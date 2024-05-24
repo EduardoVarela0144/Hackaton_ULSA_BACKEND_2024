@@ -28,6 +28,9 @@ exports.createIncident = async (req, res) => {
       incidentImagesArray = await saveS3File(incidentImages);
     }
 
+
+    console.log(JSON.parse(incident_location));
+
     const incident = new Incident({
       incident_name: incident_name,
       incident_description: incident_description,
