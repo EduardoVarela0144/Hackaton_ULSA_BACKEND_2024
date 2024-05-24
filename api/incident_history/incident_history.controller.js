@@ -1,5 +1,6 @@
 const IncidentHistory = require("./IncidentHistory");
 const { saveS3File } = require("../../services/saveS3File");
+const { showS3File } = require("../../services/showS3File");
 
 exports.createIncidentHistory = async (req, res) => {
   try {
@@ -13,8 +14,7 @@ exports.createIncidentHistory = async (req, res) => {
     } = req.body;
 
     const incidentFiles = req.files.files;
-    const incidentImages = req.files.images;  
-
+    const incidentImages = req.files.images;
 
     let incidentFilesArray = [];
     let incidentImagesArray = [];
@@ -59,17 +59,35 @@ exports.getAllIncidentHistories = async (req, res) => {
 
 exports.getIncidentHistoryById = async (req, res) => {
   try {
-    const incidentHistory = await IncidentHistory.findById(
-      req.params.id
-    ).select("-__v -updatedAt -incident_location._id");
+    let incidentHistory = await IncidentHistory.findById(req.params.id)
+      .select("-__v -updatedAt -incident_location._id")
+      .populate({
+        path: "incident_files",
+      })
+      .populate({
+        path: "incident_images",
+      });
+
     if (!incidentHistory) {
       return res.status(404).json({ message: "Incident history not found" });
     }
-    res.status(200).json(incidentHistory);
+
+    const processedFiles = await showS3File(incidentHistory.incident_files);
+    const processedImages = await showS3File(incidentHistory.incident_images);
+
+    // Crear una copia modificable de incidentHistory
+    let modifiedIncidentHistory = JSON.parse(JSON.stringify(incidentHistory));
+    
+    // Modificar los campos en la copia
+    modifiedIncidentHistory.incident_files = processedFiles;
+    modifiedIncidentHistory.incident_images = processedImages;
+
+    res.status(200).json(modifiedIncidentHistory);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 exports.updateIncidentHistory = async (req, res) => {
   try {
